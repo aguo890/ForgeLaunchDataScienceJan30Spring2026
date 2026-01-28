@@ -153,6 +153,8 @@ def update_qa_report(log_output, success):
 
         # Clean ANSI codes from log before injecting
         clean_log = re.sub(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])', '', log_output)
+        # Escape backslashes to prevent regex errors during substitution
+        clean_log = clean_log.replace('\\', '\\\\')
         
         # Inject new log
         new_log_block = f"```text\n{clean_log.strip()}\n```"
@@ -180,9 +182,12 @@ def update_qa_report(log_output, success):
 def run_verification():
     """Runs the test suite and returns (output, success) tuple."""
     print("🔍 Running test suite...")
+    venv_python = ROOT_DIR / "venv" / "Scripts" / "python.exe"
+    python_cmd = str(venv_python) if venv_python.exists() else sys.executable
+
     try:
         result = subprocess.run(
-            ["python", "-m", "pytest", "test/", "-v", "--tb=short"], 
+            [python_cmd, "-m", "pytest", "test/", "-v", "--tb=short"], 
             cwd=ROOT_DIR, 
             capture_output=True,
             text=True,

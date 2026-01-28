@@ -11,8 +11,17 @@ endif
 
 # Initial setup
 setup:
-	@echo "📦 Setting up environment..."
-	@$(PIP_CMD) install -r requirements.txt
+	@echo "📦 Creating virtual environment..."
+	@$(PYTHON_CMD) -m venv venv
+	@echo "📦 Installing dependencies..."
+	@./venv/Scripts/pip install -r requirements.txt
+	@echo "✅ Setup complete! Run 'make enter' for activation instructions."
+
+# Help user enter the environment
+enter:
+	@echo "⚠️  Make cannot activate the environment in your current shell."
+	@echo "📋 Run this command to activate:"
+	@echo "    .\\venv\\Scripts\\activate"
 
 # Run all tests
 test:
