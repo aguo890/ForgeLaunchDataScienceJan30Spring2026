@@ -10,6 +10,10 @@ plotly>=5.14.0
 
 # Machine Learning
 scikit-learn>=1.2.0
+xgboost>=1.7.0
+lightgbm>=3.3.0
+imbalanced-learn>=0.10.0
+shap>=0.41.0
 
 # Deep Learning (optional - uncomment if needed)
 # torch>=2.0.0
@@ -38,3 +42,5 @@ openai>=1.0.0
 tqdm>=4.65.0
 pyyaml>=6.0
 requests>=2.28.0
+openpyxl>=3.0.0
+pyarrow>=10.0.0
