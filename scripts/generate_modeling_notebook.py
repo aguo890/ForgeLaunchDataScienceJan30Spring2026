@@ -28,7 +28,7 @@ plt.rcParams["figure.figsize"] = (10, 6)
 cells.append(new_code_cell("""# 1. Load Processed Data
 X_train, y_train, X_test, y_test = load_processed_data('../data/processed')
 print(f"Train Shape: {X_train.shape}, Test Shape: {X_test.shape}")
-print(f"Train Class Distribution:\n{y_train.value_counts(normalize=True)}")
+print(f"Train Class Distribution:\\n{y_train.value_counts(normalize=True)}")
 """))
 
 # Cell 3: Baseline Logistic Regression
@@ -41,7 +41,7 @@ evaluate_model(lr_model, X_test, y_test, model_name="Logistic Regression")
 cells.append(new_code_cell("""# 3. Handling Imbalance: SMOTE
 X_train_smote, y_train_smote = apply_smote(X_train, y_train)
 print(f"Shape after SMOTE: {X_train_smote.shape}")
-print(f"Class Distribution after SMOTE:\n{y_train_smote.value_counts(normalize=True)}")
+print(f"Class Distribution after SMOTE:\\n{y_train_smote.value_counts(normalize=True)}")
 """))
 
 # Cell 5: XGBoost
