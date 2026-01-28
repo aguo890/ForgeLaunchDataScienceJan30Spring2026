@@ -147,3 +147,32 @@ The fallback to `sys.executable` maintains backward compatibility for environmen
 **Rationale/Logic:** The core design decision was to **train on all historical data but score only current employees**. This maximizes the model's exposure to patterns of attrition while ensuring the output is relevant for intervention. The risk categorization provides an intuitive, tiered view for HR, moving beyond a raw probability score. The `EmployeeNumber` is retained as the key for HRIS lookup. The implementation reuses the existing, tested `src` modules for data cleaning and feature engineering, ensuring consistency and reducing code duplication.
 
 **Outcome:** Successfully generated the first version of the risk watch list (`risk_watch_list.csv`), identifying 1233 active employees with their predicted attrition risk. The top 10 employees show high-risk scores (>0.86), providing a clear, data-driven starting point for
+
+## [2026-01-28 17:03] Strategic Refactoring: From Generic Template to Focused Retention Analytics Product
+
+### Context/Problem
+The previous repository structure was a **generic data science template** with extensive boilerplate (Makefile, multiple subdirectories, comprehensive testing suite) that obscured the core business value. While technically sound, it lacked **narrative focus** and didn't clearly communicate the specific HR retention problem being solved. The challenge required demonstrating not just technical competence, but the ability to deliver a **clear, actionable product**.
+
+### Solution/Implementation
+**Radically simplified the project architecture** to focus exclusively on the retention analytics pipeline:
+
+1. **Streamlined README**: Replaced comprehensive template with a **product-focused overview** highlighting the "Pre-Mortem" Retention System as the key deliverable.
+2. **Created orchestrator script**: Implemented `main.py` as a **single-entry pipeline** that runs the entire workflow from data ingestion to risk list generation.
+3. **Simplified directory structure**: Removed unnecessary abstraction layers (`analysis/`, `models/`, `utils/` subdirectories) in favor of flat, purpose-driven modules (`data_ingestion.py`, `features.py`, etc.).
+4. **Enhanced strategic documentation**: Added **practical deployment guidance** to `STRATEGIC_DELIVERABLES.md` including a draft cover email with actionable recommendations for HR stakeholders.
+
+### Rationale/Logic
+This refactoring embodies **product-oriented data science** principles:
+
+- **Reduced cognitive load**: Reviewers can immediately understand the project's purpose and run it with two commands (`pip install`, `python main.py`).
+- **Emphasized business impact**: The `risk_watch_list.csv` is positioned as the **primary deliverable**, not just a model output.
+- **Maintained technical rigor**: All core data science components (feature engineering, modeling, visualization) remain intact but are now organized for clarity rather than theoretical completeness.
+- **Added stakeholder communication**: The cover email template demonstrates **translating model outputs into business actions**, a critical skill often missing in technical submissions.
+
+The trade-off was removing extensive testing infrastructure, but this was justified because:
+1. The submission timeframe prioritizes demonstration over production readiness
+2. The simplified structure makes code inspection more straightforward
+3. Core validation happens through the pipeline's successful execution and visual outputs
+
+### Outcome
+**Successfully transformed the project from

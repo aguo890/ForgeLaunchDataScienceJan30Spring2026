@@ -81,3 +81,27 @@ Predictive modeling in HR requires a "Human-in-the-Loop" approach. The model pre
 - **Bias**: We monitored for protected class bias (Gender, Age).
 - **Usage**: Output should trigger supportive actions (Retention Bonuses, Stay Interviews), never punitive actions.
 - **Transparency**: SHAP values provide "Right to Explanation" for every prediction.
+
+---
+
+## Part 3: Deployment & Communication
+
+### Draft Cover Email
+**Subject**: CONFIDENTIAL: Retention Risk Watch List (Q1 2026)
+**Attached**: `risk_watch_list.csv`
+
+Team,
+
+As part of the Strategic Data Science Sprint, we have completed the predictive analysis of our workforce data. Attached is the Retention Risk Watch List.
+
+**How to Read This Data:**
+- **Risk Score**: A probability (0-100%) indicating the likelihood of an employee leaving in the next 6 months.
+- **High Risk (>70%)**: These employees require immediate attention.
+- **Key Drivers**: Our model found that OverTime and Role Stagnation are the strongest predictors of exit.
+
+**Recommended Actions:**
+- **Do Not** treat this as a performance review. High scores often indicate burnout, not poor performance.
+- **Do** schedule "Stay Interviews" with the top 10 profiles this week. Focus the conversation on their career growth and workload, not the prediction itself.
+- **Do** validate the data. If an employee listed here recently received a promotion, their risk may have already dropped (the data is a snapshot).
+
+Let's discuss the feedback from these interviews in our next sync.
