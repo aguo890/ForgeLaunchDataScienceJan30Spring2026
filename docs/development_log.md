@@ -131,3 +131,19 @@ The fallback to `sys.executable` maintains backward compatibility for environmen
 *   **Solution/Implementation**: Fixed the malformed `print` statement in the notebook cell (line: `print(f"Train Class Distribution:\n{y_train.value_counts(normalize=True)}")`). Subsequently, executed the notebook to generate two key artifacts:
     1.  `notebooks/modeling_results.md`: A clean, executed record of the modeling pipeline output, including performance metrics and the **SHAP summary plot**.
     2.  `notebooks/notebook_output.md`: The raw execution output, capturing the initial error
+
+## [2026-01-28 16:52] Operationalizing Model: Risk Watch List Generation
+
+**Context/Problem:** The predictive model for employee attrition was developed and validated, but remained a technical artifact. To deliver business value, we needed to operationalize the model's predictions into an actionable output for HR stakeholders—specifically, a prioritized list of current employees at highest risk of leaving.
+
+**Solution/Implementation:** Created a new Jupyter notebook (`04_Risk_Watch_List.ipynb`) and supporting script to generate a **risk watch list**. The pipeline:
+1.  Loads the raw dataset, preserving the `EmployeeNumber` identifier via a new `drop_id=False` parameter in `load_and_clean_data`.
+2.  Filters the dataset to **active employees only** (`Attrition == 'No'`), as the watch list is for current staff.
+3.  Processes the full dataset through the established **feature engineering** pipeline to train the model on all historical data (leavers + stayers).
+4.  Trains the final **logistic regression model** (the winning model from prior analysis) with `class_weight='balanced'` to handle the imbalanced target.
+5.  Scores the active employees using the trained model, generating a **risk probability** (probability of class 1: 'Yes/Leave').
+6.  Creates a final `DataFrame` sorted by risk score, adds a categorical `RiskLevel` (Low: <0.3, Medium: 0.3-0.7, High: >0.7), and exports to `results/risk_watch_list.csv`.
+
+**Rationale/Logic:** The core design decision was to **train on all historical data but score only current employees**. This maximizes the model's exposure to patterns of attrition while ensuring the output is relevant for intervention. The risk categorization provides an intuitive, tiered view for HR, moving beyond a raw probability score. The `EmployeeNumber` is retained as the key for HRIS lookup. The implementation reuses the existing, tested `src` modules for data cleaning and feature engineering, ensuring consistency and reducing code duplication.
+
+**Outcome:** Successfully generated the first version of the risk watch list (`risk_watch_list.csv`), identifying 1233 active employees with their predicted attrition risk. The top 10 employees show high-risk scores (>0.86), providing a clear, data-driven starting point for

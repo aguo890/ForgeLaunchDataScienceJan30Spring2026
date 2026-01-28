@@ -26,15 +26,16 @@ def load_data(filepath: str) -> pd.DataFrame:
     logger.info(f"Data loaded successfully. Shape: {df.shape}")
     return df
 
-def clean_data(df: pd.DataFrame) -> pd.DataFrame:
+def clean_data(df: pd.DataFrame, drop_id: bool = True) -> pd.DataFrame:
     """
     Performs basic data hygiene:
     - Drops zero-variance columns (EmployeeCount, Over18, StandardHours)
-    - Drops unique identifiers (EmployeeNumber)
+    - Drops unique identifiers (EmployeeNumber) if drop_id is True
     - Checks for duplicates
     
     Args:
         df (pd.DataFrame): Raw dataframe.
+        drop_id (bool): Whether to drop EmployeeNumber.
         
     Returns:
         pd.DataFrame: Cleaned dataframe.
@@ -42,7 +43,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     logger.info("Starting data cleaning...")
     
     # List of columns to drop as identified in the Sprint Plan
-    cols_to_drop = ['EmployeeCount', 'Over18', 'StandardHours', 'EmployeeNumber']
+    cols_to_drop = ['EmployeeCount', 'Over18', 'StandardHours']
+    if drop_id:
+        cols_to_drop.append('EmployeeNumber')
     
     # Drop existing columns from the list
     existing_cols_drop = [c for c in cols_to_drop if c in df.columns]
@@ -62,11 +65,12 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     logger.info(f"Cleaning complete. New Shape: {df_cleaned.shape}")
     return df_cleaned
 
-def load_and_clean_data(filepath: str = None) -> pd.DataFrame:
+def load_and_clean_data(filepath: str = None, drop_id: bool = True) -> pd.DataFrame:
     """
     Convenience function to load and clean data in one step.
     Args:
         filepath (str): Path to raw data. If None, resolves relative to project root.
+        drop_id (bool): Whether to drop EmployeeNumber.
     Returns:
         pd.DataFrame: Cleaned dataframe.
     """
@@ -75,7 +79,7 @@ def load_and_clean_data(filepath: str = None) -> pd.DataFrame:
         filepath = Path(__file__).resolve().parent.parent / "data" / "raw" / "WA_Fn-UseC_-HR-Employee-Attrition.csv"
     
     df = load_data(str(filepath))
-    return clean_data(df)
+    return clean_data(df, drop_id=drop_id)
 
 if __name__ == "__main__":
     # Default execution for testing

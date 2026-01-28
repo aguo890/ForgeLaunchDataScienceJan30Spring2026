@@ -67,12 +67,13 @@ def encode_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
 def scale_features(df: pd.DataFrame, target_col: str = 'Attrition') -> pd.DataFrame:
     """
     Scales numerical features using MinMaxScaler.
-    Excludes the target column.
+    Excludes the target column and EmployeeNumber if present.
     """
     df = df.copy()
     scaler = MinMaxScaler()
     
-    feature_cols = [c for c in df.columns if c != target_col]
+    exclusions = [target_col, 'EmployeeNumber']
+    feature_cols = [c for c in df.columns if c not in exclusions]
     
     df[feature_cols] = scaler.fit_transform(df[feature_cols])
     return df
