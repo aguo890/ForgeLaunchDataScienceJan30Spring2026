@@ -234,3 +234,21 @@ The previous dashboard provided individual risk scores but lacked **systemic dia
 ## [2026-01-30 02:30] Minor Refinements
 
 - **Updated table header**: Changed "Risk Level
+
+## [2026-01-30 02:45] Enhanced Global Driver Analysis & Visualization
+
+### 1. **Context/Problem**
+The previous `global_drivers.json` output only contained a normalized importance score. This presented a critical **interpretability gap**: stakeholders could see which features were most important, but not *how* they influenced attrition risk (i.e., whether they were risk accelerators or protective factors). The visualization also lacked this directional context, using a single color scale that only communicated magnitude.
+
+### 2. **Solution/Implementation**
+We fundamentally restructured the global driver data schema and updated the visualization logic:
+*   **Data Schema Enhancement**: Modified the pipeline generating `global_drivers.json` to include the **raw model coefficients** (`raw_coef`), a human-readable `direction` label ("Risk Accelerator"/"Protective Factor"), and retained the `normalized_score` for relative ranking.
+*   **Visualization Logic Update**: Updated `render_drivers_chart()` in the final slides to use a **directional color scheme**. Bars for positive coefficients (risk accelerators) are colored red/orange (`--status-risk-high`), while bars for negative coefficients (protective factors) are colored teal/green (`--status-safe`). Added a small numeric label showing the normalized score.
+
+### 3. **Rationale/Logic**
+*   **Interpretability Over Raw Output**: A model coefficient's sign is as critical as its magnitude. For a logistic regression predicting attrition (`1 = leaves`), a **positive coefficient** means the feature *increases* the predicted probability of attrition (a risk accelerator). A **negative coefficient** means it *decreases* the probability (a protective factor). Presenting both is essential for actionable insights (e.g., "increase YearsWithCurrManager" vs. "reduce OverTime").
+*   **Visual Salience for Decision-Making**: Color is a pre-attentive attribute. Using distinct hues (red vs. green) allows an executive to instantly categorize drivers without reading labels, accelerating comprehension and prioritization.
+*   **Backward Compatibility**: The function includes a fallback (`widthVal`) to use the old `importance` field if `normalized_score` is missing, ensuring the visualization doesn't break with legacy data.
+
+### 4. **Outcome**
+The global drivers analysis is now **causally interpretable**. For example, we can definit

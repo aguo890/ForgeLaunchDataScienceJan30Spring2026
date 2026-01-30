@@ -1,22 +1,37 @@
 [
   {
     "feature": "YearsWithCurrManager",
-    "importance": 100.0
+    "importance": 1.7166751408804304,
+    "raw_coef": -1.7166751408804304,
+    "direction": "Protective Factor",
+    "normalized_score": 100.0
   },
   {
     "feature": "YearsAtCompany",
-    "importance": 99.1
+    "importance": 1.7011806633019755,
+    "raw_coef": 1.7011806633019755,
+    "direction": "Risk Accelerator",
+    "normalized_score": 99.1
   },
   {
     "feature": "OverTime",
-    "importance": 96.0
+    "importance": 1.647834007989951,
+    "raw_coef": 1.647834007989951,
+    "direction": "Risk Accelerator",
+    "normalized_score": 96.0
   },
   {
     "feature": "BusinessTravel_Travel_Frequently",
-    "importance": 88.5
+    "importance": 1.5197243911215976,
+    "raw_coef": 1.5197243911215976,
+    "direction": "Risk Accelerator",
+    "normalized_score": 88.5
   },
   {
     "feature": "YearsSinceLastPromotion",
-    "importance": 81.3
+    "importance": 1.3948596025820228,
+    "raw_coef": 1.3948596025820228,
+    "direction": "Risk Accelerator",
+    "normalized_score": 81.3
   }
 ]
