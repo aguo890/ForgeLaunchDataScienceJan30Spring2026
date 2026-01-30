@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Application Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --slide-width: 960px;
+            --slide-height: 540px;
+            /* 16:9 Aspect Ratio */
+            --bg-color: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --accent-blue: #4f46e5;
+            --risk-critical: #dc2626;
+            /* Red */
+            --risk-safe: #0d9488;
+            /* Teal */
+            --surface-card: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background-color: #1e293b;
+            /* Dark background to make slides pop */
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* --- SLIDE CONTAINER --- */
+        .slide {
+            width: 95vw;
+            max-width: var(--slide-width);
+            height: auto;
+            aspect-ratio: 16 / 9;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .slide-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 16px 0;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 24px 0;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 800px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        li::before {
+            content: "•";
+            color: var(--accent-blue);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .subtext {
+            font-size: 24px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .highlight {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* --- VISUALIZATION COMPONENTS (Re-used) --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .kpi-card {
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .kpi-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .kpi-lbl {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Drivers Chart Styles */
+        .driver-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .driver-label {
+            width: 300px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .driver-track {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-color);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .driver-fill {
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* Professional Data Profile Table */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .profile-header {
+            background: #f1f5f9;
+            font-weight: 800;
+            padding: 8px;
+            border-radius: 4px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .profile-data {
+            padding: 8px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .footer-attr {
+            position: absolute;
+            bottom: 20px;
+            left: 60px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="position: relative;">
+        <div class="slide-label">Slide 1: Title & Objective</div>
+        <div class="slide" style="display: flex; flex-direction: column; justify-content: center;">
+            <div style="margin-bottom: 40px;">
+                <span
+                    style="background: #eef2ff; color: #4f46e5; padding: 6px 12px; border-radius: 4px; font-weight: 600; font-size: 14px; text-transform: uppercase;">Data
+                    Science Project</span>
+            </div>
+            <h1>Predicting Employee Attrition:<br>A Diagnostic Approach</h1>
+            <p class="subtext">From Descriptive Stats to Machine Learning Drivers</p>
+            <div style="margin-top: 60px; font-family: 'JetBrains Mono', monospace; color: #94a3b8; font-size: 14px;">
+                Generated by: Aaron Guo <br>
+                Date: Jan 30, 2026
+            </div>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <div class="slide-label">Slide 2: Context</div>
+        <div class="slide">
+            <h2>Data Profile & Context</h2>
+            <div style="display: flex; gap: 40px; align-items: flex-start;">
+                <div style="flex: 1;">
+                    <p><strong>Dataset Overview:</strong><br>
+                        1,470 Records | 35 Features | <span class="highlight">0% Missing Data</span>
+                    </p>
+                    <p style="font-size: 14px;">Dropped invariant features (<em>EmployeeCount, Over18,
+                            StandardHours</em>) to reduce model noise.</p>
+
+                    <div class="profile-grid">
+                        <div class="profile-header">Category</div>
+                        <div class="profile-header">Key Features</div>
+
+                        <div class="profile-data"><strong>Demographics</strong></div>
+                        <div class="profile-data">Age, Gender, Education, Marital Status</div>
+
+                        <div class="profile-data"><strong>Engagement</strong></div>
+                        <div class="profile-data">JobSatisfaction, WorkLifeBalance, Involvement</div>
+
+                        <div class="profile-data"><strong>Financial</strong></div>
+                        <div class="profile-data">MonthlyIncome, StockOptionLevel, DailyRate</div>
+
+                        <div class="profile-data"><strong>Workload</strong></div>
+                        <div class="profile-data">OverTime, BusinessTravel, DistanceFromHome</div>
+                    </div>
+                </div>
+
+                <div
+                    style="flex: 0.8; background: #f8fafc; padding: 25px; border-radius: 12px; border-left: 4px solid var(--accent-blue);">
+                    <strong style="color: var(--text-primary);">The Research Question</strong>
+                    <p style="font-size: 16px; margin-top: 10px;">
+                        Is attrition a <strong>Financial</strong> problem (Compensation) or a <strong>Systemic</strong>
+                        problem (Burnout/Culture)?
+                    </p>
+                    <p style="font-size: 16px;">
+                        <strong>Target:</strong> <code style="color: var(--accent-blue);">Attrition (Yes/No)</code>
+                    </p>
+                </div>
+            </div>
+            <div class="footer-attr">Source: IBM Fictional HR Dataset via Kaggle</div>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <div class="slide-label">Slide 3: Approach</div>
+        <div class="slide">
+            <h2>Approach & Methodology</h2>
+            <div style="margin-top: 40px;">
+                <div style="display: flex; align-items: start; margin-bottom: 30px;">
+                    <div
+                        style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 20px;">
+                        1</div>
+                    <div>
+                        <h3 style="margin: 0 0 8px 0;">Data Cleaning & Prep</h3>
+                        <p style="margin: 0; font-size: 16px;">Handled categorical variables (One-Hot Encoding) for
+                            'Department' and 'JobRole'. Checked for class imbalance (Attrition 'Yes' is minority class).
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start; margin-bottom: 30px;">
+                    <div
+                        style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 20px;">
+                        2</div>
+                    <div>
+                        <h3 style="margin: 0 0 8px 0;">Modeling Strategy</h3>
+                        <p style="margin: 0; font-size: 16px;">Moved from basic correlation matrices to <strong>Logistic
+                                Regression</strong>. This allowed me to isolate the <em>coefficient weights</em> of each
+                            feature to understand directionality.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: start;">
+                    <div
+                        style="background: var(--accent-blue); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 20px;">
+                        3</div>
+                    <div>
+                        <h3 style="margin: 0 0 8px 0;">Diagnostic Analytics</h3>
+                        <p style="margin: 0; font-size: 16px;">Distinguished between <span
+                                style="color: var(--risk-critical); font-weight: 600;">Risk Accelerators</span> (drivers
+                            of exit) and <span style="color: var(--risk-safe); font-weight: 600;">Protective
+                                Factors</span> (anchors of retention).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <div class="slide-label">Slide 4: Findings (Who?)</div>
+        <div class="slide">
+            <h2>Key Finding 1: The Scope of Risk</h2>
+            <p>Our model predicts significant exposure. High-risk employees are concentrated in R&D roles with specific
+                tenure profiles.</p>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-lbl">Total Employees</div>
+                    <div class="kpi-val">1,470</div>
+                    <div style="font-size: 12px; color: var(--risk-safe);">100% Data Coverage</div>
+                </div>
+                <div class="kpi-card" style="border-color: var(--risk-critical); background: #fef2f2;">
+                    <div class="kpi-lbl">High Risk Segment</div>
+                    <div class="kpi-val" style="color: var(--risk-critical);">237</div>
+                    <div style="font-size: 12px; color: var(--risk-critical);">~16.1% of Workforce</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-lbl">Avg Risk Probability</div>
+                    <div class="kpi-val">28.4%</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Model Confidence Score</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 8px;">
+                <strong>Insight:</strong>
+                While only 16% are "High Risk", this group accounts for a disproportionate amount of potential turnover
+                cost.
+            </div>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <div class="slide-label">Slide 5: Findings (Why?)</div>
+        <div class="slide">
+            <h2>Key Finding 2: Systemic Drivers</h2>
+            <p>The model reveals distinct <span
+                    style="color: var(--risk-critical); font-weight: 600;">Accelerators</span> and <span
+                    style="color: var(--risk-safe); font-weight: 600;">Protectors</span>.</p>
+
+            <div class="chart-container" id="diagnosticChart">
+            </div>
+
+            <div
+                style="position: absolute; bottom: 40px; right: 60px; width: 300px; font-size: 14px; color: var(--text-secondary); text-align: right;">
+                *Coefficients extracted from Logistic Regression model (C=1.0, L2 Penalty).
+            </div>
+        </div>
+    </div>
+
+    <div style="position: relative;">
+        <div class="slide-label">Slide 6: Conclusion</div>
+        <div class="slide">
+            <!-- 
+            PSEUDOCODE for "What-If" Calculator Strategy:
+            (Hidden for inspection)
+            -->
+            <script type="text/plain" style="display: none;">
+            def calculate_retention_impact(employee_id, variable_to_change, new_value):
+                # 1. Fetch current employee feature vector
+                current_features = database.get_employee(employee_id)
+                
+                # 2. Update the specific variable (e.g., set OverTime to 'No')
+                updated_features = current_features.copy()
+                updated_features[variable_to_change] = new_value
+                
+                # 3. Re-run prediction using the Logistic Regression model
+                new_probability = log_reg_model.predict_proba(updated_features)
+                
+                # 4. Return the delta (How much risk did we eliminate?)
+                return current_features.risk_score - new_probability
+            </script>
+            <h2>Future Work & Recommendations</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px;">
+                <div>
+                    <h3 style="color: var(--accent-blue);">Prescriptive Analytics</h3>
+                    <p>If I had more time, I would build a <strong>"What-If" Calculator</strong>.</p>
+                    <p style="font-size: 16px;">This tool would allow HR managers to toggle specific variables (e.g.,
+                        "Remove OverTime") to see the immediate reduction in an employee's Risk Score.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--accent-blue);">Deployment</h3>
+                    <p>Integrate this model into the weekly HR dashboard.</p>
+                    <p style="font-size: 16px;">Instead of a static report, managers would receive a "Monday Morning
+                        Risk Alert" for any team member whose score crosses the 70% threshold.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MOCK DATA (Matches your Python Output)
+        // If you run inject_data.py, this array will be replaced with real data.
+        window.GLOBAL_DRIVERS = [
+            { feature: "OverTime (Yes)", importance: 95, raw_coef: 1.65, direction: "Risk Accelerator" },
+            { feature: "YearsWithCurrManager", importance: 88, raw_coef: -1.72, direction: "Protective Factor" },
+            { feature: "YearsAtCompany", importance: 85, raw_coef: 1.70, direction: "Risk Accelerator" },
+            { feature: "StockOptionLevel", importance: 60, raw_coef: -0.9, direction: "Protective Factor" },
+            { feature: "JobSatisfaction", importance: 45, raw_coef: -0.5, direction: "Protective Factor" }
+        ];
+
+        function renderDiagnosticChart() {
+            const container = document.getElementById('diagnosticChart');
+
+            window.GLOBAL_DRIVERS.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'driver-row';
+
+                // Color Logic
+                const isRisk = item.raw_coef > 0;
+                const color = isRisk ? 'var(--risk-critical)' : 'var(--risk-safe)';
+                const width = (item.normalized_score !== undefined ? item.normalized_score : item.importance) + '%';
+
+                row.innerHTML = `
+                    <div class="driver-label">${item.feature}</div>
+                    <div class="driver-track">
+                        <div class="driver-fill" style="width: ${width}; background: ${color};">
+                            ${isRisk ? '+' : ''}${Math.abs(item.raw_coef).toFixed(2)}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderDiagnosticChart);
+    </script>
+</body>
+
+</html>

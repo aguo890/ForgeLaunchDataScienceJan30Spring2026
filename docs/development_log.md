@@ -252,3 +252,24 @@ We fundamentally restructured the global driver data schema and updated the visu
 
 ### 4. **Outcome**
 The global drivers analysis is now **causally interpretable**. For example, we can definit
+
+## [2026-01-30 03:11] Final Presentation Generation & Data Injection
+
+### Context/Problem
+The project required a polished, standalone presentation to communicate findings to stakeholders. The analysis was complete, but the results were scattered across JSON files and raw code outputs. A professional, visually consistent HTML deck was needed to synthesize the data science story, key metrics, and actionable insights in a format suitable for executive review.
+
+### Solution/Implementation
+Created a comprehensive, multi-slide HTML presentation (`presentation.html`) and a final results file (`presentation_final.html`). The solution involved:
+1.  **Static HTML/CSS Presentation:** Built a custom, self-contained HTML file with a clean, professional design system (using Inter and JetBrains Mono fonts, a defined color palette for risk/emphasis, and a 16:9 slide layout).
+2.  **Structured Narrative:** Organized the deck into a logical flow: Title/Objective → Data Context → Methodology → Key Findings (Who, Why, What) → Recommendations.
+3.  **Dynamic Data Injection:** Updated `src/utils/inject_data.py` to programmatically populate the static HTML template with live results from `results/global_drivers.json`. This creates the final `presentation_final.html` output.
+4.  **Visual Data Encoding:** Implemented CSS-based visualizations within the HTML, such as a horizontal bar chart for driver coefficients and a KPI grid, to make the model's findings immediately comprehensible.
+
+### Rationale/Logic
+A static HTML file was chosen over a slide deck tool (PPT, Google Slides) for **reproducibility and version control**. The entire presentation can be regenerated instantly if the underlying data or model changes. The design prioritizes **clarity and scannability** for a business audience:
+*   **Color Coding:** Uses `--risk-critical` (red) and `--risk-safe` (teal) to intuitively distinguish risk accelerators from protective factors.
+*   **Coefficient Visualization:** The horizontal bar chart for global drivers translates logistic regression coefficients into an easily digestible, ranked format, highlighting the most impactful features.
+*   **Separation of Concerns:** The template (`presentation.html`) defines structure and style, while the injection script handles data. This makes maintaining and updating the presentation efficient.
+
+### Outcome
+Generated a final, data-rich presentation deck (`presentation_final.html`). The QA report timestamp

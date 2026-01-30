@@ -1,13 +1,49 @@
 import csv
 import json
 import os
+import re
 
-def inject_data(csv_path, html_template_path, output_path):
+def calculate_baseline_metrics(raw_data_path):
+    """
+    Calculates baseline attrition metrics from the raw HR dataset.
+    Returns dict with 'rate' (percentage) and 'total_employees'.
+    """
+    if not os.path.exists(raw_data_path):
+        print(f"Warning: Raw data not found at {raw_data_path}, using defaults")
+        return {'rate': 16.1, 'total_employees': 1470}
+    
+    total_employees = 0
+    attrition_count = 0
+    
+    with open(raw_data_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            total_employees += 1
+            # Check for Attrition column (case-insensitive)
+            attrition_val = row.get('Attrition', row.get('attrition', '')).strip().lower()
+            if attrition_val == 'yes' or attrition_val == '1':
+                attrition_count += 1
+    
+    if total_employees == 0:
+        return {'rate': 0.0, 'total_employees': 0}
+    
+    rate = round((attrition_count / total_employees) * 100, 1)
+    return {'rate': rate, 'total_employees': total_employees}
+
+
+def inject_data(csv_path, html_template_path, output_path, raw_data_path=None):
     """
     Reads a CSV file, converts it to JSON, and injects it into an HTML template
-    as a global window.RISK_DATA variable. Also injects global_drivers.json.
+    as a global window.RISK_DATA variable. Also injects global_drivers.json
+    and baseline metrics from the raw dataset.
     """
     print(f"Reading data from {csv_path}...")
+    
+    # 0. Calculate Baseline Metrics from raw data
+    if raw_data_path is None:
+        raw_data_path = os.path.join(os.path.dirname(csv_path), '..', 'data', 'WA_Fn-UseC_-HR-Employee-Attrition.csv')
+    baseline = calculate_baseline_metrics(raw_data_path)
+    print(f"Baseline: {baseline['rate']}% attrition across {baseline['total_employees']} employees")
     
     # 1. Read the Real Data
     rows = []
@@ -50,6 +86,20 @@ def inject_data(csv_path, html_template_path, output_path):
         print(f"Error: HTML template not found at {html_template_path}")
         return
     
+    # 4b. Replace baseline metrics in the HTML (Slide 2)
+    # Replace the hardcoded baseline rate with calculated value
+    html_content = re.sub(
+        r'(<div id="baseline-rate"[^>]*>)\s*[\d.]+%',
+        rf'\g<1>\n                                {baseline["rate"]}%',
+        html_content
+    )
+    # Replace the hardcoded population scope with calculated value
+    html_content = re.sub(
+        r'(<div id="population-scope"[^>]*>)\s*[\d,]+',
+        rf'\g<1>\n                                {baseline["total_employees"]:,}',
+        html_content
+    )
+    
     # Inject before closing body tag
     if "</body>" in html_content:
         final_html = html_content.replace("</body>", injection_code + "\n</body>")
@@ -69,7 +119,7 @@ if __name__ == "__main__":
     # Adjust paths relative to the project root if run from there, 
     # or handle relative imports. Assuming run from project root.
     CSV_PATH = "results/risk_watch_list.csv"
-    TEMPLATE_PATH = "slides.html"
-    OUTPUT_PATH = "results/slides_final.html"
+    TEMPLATE_PATH = "presentation.html"
+    OUTPUT_PATH = "results/presentation_final.html"
     
     inject_data(CSV_PATH, TEMPLATE_PATH, OUTPUT_PATH)

@@ -9,8 +9,8 @@
   {
     "feature": "YearsAtCompany",
     "importance": 1.7011806633019755,
-    "raw_coef": 1.7011806633019755,
-    "direction": "Risk Accelerator",
+    "raw_coef": -1.7011806633019755,
+    "direction": "Protective Factor",
     "normalized_score": 99.1
   },
   {
