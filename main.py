@@ -10,10 +10,32 @@ sys.path.append(str(Path(__file__).parent))
 
 from src.data_ingestion import load_and_clean_data
 from src.features import perform_feature_engineering, split_data, scale_train_test
-from src.modeling import train_logistic_regression
+from src.modeling import train_logistic_regression, get_strategic_insights
 from src.visualization import (setup_styles, plot_attrition_by_overtime, 
                                plot_feature_importance, plot_risk_distribution,
                                plot_correlation_heatmap)
+import json
+
+# Configure Logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def main():
+    # 1. Setup
+    logger.info("Starting Forge Launch Data Science Sprint...")
+    results_dir = Path('results')
+    figures_dir = results_dir / 'figures'
+    figures_dir.mkdir(parents=True, exist_ok=True)
+    setup_styles()
+
+    # ... [Ingestion and Feature Engineering] ... 
+    # (Abbreviated for prompt specific instruction, but I must provide valid ReplaceFileContent. 
+    # I will replace the import section and the end of the file where I add the new logic.)
+    
+    # ... Skipping unchanged lines for ReplaceFileContent efficiency is best if I use MultiReplace.
+    # But ReplaceFileContent needs contiguous block. 
+    # Let me use MultiReplaceFileContent for main.py to handle import and logic separation.
+
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -75,6 +97,17 @@ def main():
     # 5. Modeling
     logger.info("Phase 4: Training Logistic Regression Model...")
     model = train_logistic_regression(X_scaled, y, class_weight='balanced')
+
+    # --- NEW: Extract Diagnostic Insights ---
+    logger.info("Extracting strategic insights...")
+    feature_names = X_scaled.columns.tolist()
+    global_drivers = get_strategic_insights(model, feature_names)
+
+    # Save to JSON for injection
+    with open(results_dir / 'global_drivers.json', 'w') as f:
+        json.dump(global_drivers, f, indent=2)
+
+    logger.info(f"Strategic insights saved: {global_drivers}")
 
     # 6. Model Interpretation
     logger.info("Phase 5: Visualizing Model Drivers...")

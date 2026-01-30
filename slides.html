@@ -875,29 +875,20 @@
                 </div>
             </div>
 
-            <!-- Distribution Card -->
+            <!-- Top Risk Drivers (Diagnostic) -->
             <div class="bento-card distribution-card">
-                <span class="section-label">Risk Distribution</span>
-                <div class="distribution-bars" id="distributionBars">
-                    <!-- Populated by JS -->
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-4);">
+                    <div>
+                        <span class="section-label">Top Attrition Drivers</span>
+                        <div class="kpi-label"
+                            style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: 4px;">
+                            Systemic Risk Factors (Diagnostic)
+                        </div>
+                    </div>
                 </div>
-                <div class="distribution-legend">
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background: var(--status-risk-critical)"></span>
-                        <span>Critical (&gt;80%)</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background: var(--status-risk-high)"></span>
-                        <span>High (70-80%)</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background: var(--status-risk-medium)"></span>
-                        <span>Medium (40-70%)</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="background: var(--status-risk-low)"></span>
-                        <span>Low (&lt;40%)</span>
-                    </div>
+
+                <div id="driversContainer" style="display: flex; flex-direction: column; gap: var(--space-3);">
                 </div>
             </div>
 
@@ -931,7 +922,7 @@
                             <th style="width: 150px;">Employee ID</th>
                             <th style="width: 150px;">Risk Score</th>
                             <th style="width: 150px;">Risk Status</th>
-                            <th>Risk Level Indicator</th>
+                            <th>Risk Probability</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -947,6 +938,95 @@
         // ============================================
         // REAL DASHBOARD LOGIC (Injected Data)
         // ============================================
+
+        // Placeholder for injection
+        window.GLOBAL_DRIVERS = [];
+
+        function render_drivers_chart() {
+            const container = document.getElementById("driversContainer");
+            const data = window.GLOBAL_DRIVERS; // Now contains 'raw_coef' and 'normalized_score'
+
+            if (!data || data.length === 0) {
+                container.innerHTML = "<div class='text-secondary' style='font-size: var(--text-xs);'>No driver data available.</div>";
+                return;
+            }
+
+            container.innerHTML = "";
+
+            data.forEach(item => {
+                const row = document.createElement("div");
+                row.style.display = "flex";
+                row.style.alignItems = "center";
+                row.style.gap = "var(--space-3)";
+                row.style.fontSize = "var(--text-xs)";
+
+                // Label
+                const label = document.createElement("div");
+                label.style.width = "130px";
+                label.style.color = "var(--text-secondary)";
+                label.style.whiteSpace = "nowrap";
+                label.style.overflow = "hidden";
+                label.style.textOverflow = "ellipsis";
+                label.style.fontWeight = "500";
+                label.innerText = format_feature_name(item.feature);
+                label.title = item.feature; // Tooltip for full name
+
+                // Track
+                const track = document.createElement("div");
+                track.style.flex = "1";
+                track.style.height = "6px";
+                track.style.background = "var(--surface-hover)";
+                track.style.borderRadius = "4px";
+                track.style.overflow = "hidden";
+                track.style.position = "relative"; // For tooltip positioning if needed
+
+                // Fill Bar
+                const fill = document.createElement("div");
+                fill.style.height = "100%";
+                // Use normalized_score we calculated in Python
+                // Fallback to item.importance if normalized_score is missing (legacy safety)
+                const widthVal = item.normalized_score !== undefined ? item.normalized_score : item.importance;
+                fill.style.width = `${widthVal}%`;
+                fill.style.borderRadius = "4px";
+                fill.style.transition = "width 0.5s ease-out";
+
+                // --- NEW: Directional Color Logic ---
+                if (item.raw_coef > 0) {
+                    // Positive Coefficient = Risk Accelerator (Red/Orange)
+                    fill.style.background = "var(--status-risk-high)";
+                } else {
+                    // Negative Coefficient = Protective Factor (Teal/Green)
+                    fill.style.background = "var(--status-safe)";
+                }
+                // ------------------------------------
+
+                track.appendChild(fill);
+                row.appendChild(label);
+                row.appendChild(track);
+
+                // Optional: Value label
+                const value = document.createElement("div");
+                value.style.width = "25px";
+                value.style.textAlign = "right";
+                value.style.color = "var(--text-tertiary)";
+                value.style.fontSize = "10px";
+                // Show + or - sign
+                value.innerText = (item.raw_coef > 0 ? "+" : "") + widthVal.toFixed(0);
+
+                row.appendChild(value);
+                container.appendChild(row);
+            });
+        }
+
+        // Helper to make "StockOptionLevel" -> "Stock Options"
+        function format_feature_name(name) {
+            return name
+                .replace(/([A-Z])/g, ' $1') // Add space before caps
+                .replace(/^./, str => str.toUpperCase()) // Cap first letter
+                .trim()
+                .replace("Job Satisfaction", "Job Satisfaction") // Specific overrides if needed
+                .replace("Stock Option Level", "Stock Options");
+        }
 
         function init_dashboard() {
             const badge = document.getElementById("data-status-badge");
@@ -993,22 +1073,8 @@
             document.getElementById('kpiTotal').textContent = data.length.toLocaleString();
             document.getElementById('kpiAvgRisk').textContent = (avgScore * 100).toFixed(1) + '%';
 
-            // --- 3. Render Distribution Bars ---
-            const distContainer = document.getElementById('distributionBars');
-            distContainer.innerHTML = ""; // clear
-
-            const distribution = { critical, high, medium, low };
-            const maxVal = Math.max(critical, high, medium, low);
-
-            Object.entries(distribution).forEach(([key, value]) => {
-                if (key === 'total') return;
-                const height = maxVal > 0 ? (value / maxVal) * 100 : 0;
-                const div = document.createElement('div');
-                div.className = `distribution-bar ${key}`;
-                div.style.height = `${Math.max(height, 5)}%`;
-                div.title = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`;
-                distContainer.appendChild(div);
-            });
+            // --- 3. Render Strategic Drivers (Replaces Distribution Bars) ---
+            render_drivers_chart();
 
             // --- 4. Render Table ---
             window.fullRiskData = data; // Store for filtering
@@ -1037,6 +1103,14 @@
                 if (lowerLevel === 'high' || lowerLevel === 'critical') dotClass = "dot-high";
                 else if (lowerLevel === 'medium') dotClass = "dot-medium";
 
+                // Determine color
+                const colorMap = {
+                    'dot-high': 'var(--status-risk-critical)',
+                    'dot-medium': 'var(--status-risk-medium)',
+                    'dot-low': 'var(--status-risk-low)'
+                };
+                const barColor = colorMap[dotClass] || 'var(--status-risk-low)';
+
                 tr.innerHTML = `
                     <td class="text-mono">${item.EmployeeNumber}</td>
                     <td>
@@ -1044,9 +1118,9 @@
                     </td>
                     <td>${level}</td>
                     <td>
-                        <span class="risk-badge" style="padding: 4px 0; border: none; background: transparent;">
-                             <div class="status-dot ${dotClass}" style="width: 100%; height: 6px; border-radius: 4px;"></div>
-                        </span>
+                        <div style="width: 100%; height: 6px; background: var(--border-subtle); border-radius: 4px; overflow: hidden;" title="Risk Probability: ${scorePct}%">
+                            <div style="width: ${scorePct}%; height: 100%; background: ${barColor};"></div>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(tr);

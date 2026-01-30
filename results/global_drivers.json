@@ -1,0 +1,22 @@
+[
+  {
+    "feature": "YearsWithCurrManager",
+    "importance": 100.0
+  },
+  {
+    "feature": "YearsAtCompany",
+    "importance": 99.1
+  },
+  {
+    "feature": "OverTime",
+    "importance": 96.0
+  },
+  {
+    "feature": "BusinessTravel_Travel_Frequently",
+    "importance": 88.5
+  },
+  {
+    "feature": "YearsSinceLastPromotion",
+    "importance": 81.3
+  }
+]

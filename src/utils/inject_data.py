@@ -5,7 +5,7 @@ import os
 def inject_data(csv_path, html_template_path, output_path):
     """
     Reads a CSV file, converts it to JSON, and injects it into an HTML template
-    as a global window.RISK_DATA variable.
+    as a global window.RISK_DATA variable. Also injects global_drivers.json.
     """
     print(f"Reading data from {csv_path}...")
     
@@ -23,10 +23,20 @@ def inject_data(csv_path, html_template_path, output_path):
     # 2. Serialize to JSON
     json_payload = json.dumps(rows)
 
+    # 2b. Read Global Drivers
+    drivers_path = os.path.join(os.path.dirname(csv_path), 'global_drivers.json')
+    drivers_json = "[]"
+    if os.path.exists(drivers_path):
+        with open(drivers_path, 'r') as f:
+            drivers_json = f.read()
+    else:
+        print(f"Warning: Drivers file not found at {drivers_path}")
+
     # 3. Prepare the Injection String
     injection_code = f"""
     <script>
         window.RISK_DATA = {json_payload};
+        window.GLOBAL_DRIVERS = {drivers_json};
         console.log("Build-Time Injection Complete. Rows loaded:", window.RISK_DATA.length);
     </script>
     """

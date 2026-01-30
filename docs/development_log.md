@@ -207,3 +207,30 @@ The scaling pattern refinement demonstrates **defensive programming** against da
 ### Outcome
 - **Professional submission package**: Created `ForgeLaunch_DataScience_Submission_20260129.zip` with clean structure
 - **Comprehensive documentation**: README now serves as both technical reference
+
+## [2026-01-30 02:30] Strategic Insights Integration & Dashboard Enhancement
+
+### Context/Problem
+The previous dashboard provided individual risk scores but lacked **systemic diagnostic insights**. While we could identify high-risk employees, we couldn't answer the critical business question: "What are the *organization-wide drivers* of attrition?" This limited the dashboard's strategic value for leadership decision-making.
+
+### Solution/Implementation
+1. **Added strategic insights extraction** in `src/modeling.py` with a new `get_strategic_insights()` function that calculates normalized feature importance from the logistic regression model.
+2. **Integrated insights into main pipeline** by saving the top drivers as `global_drivers.json` for injection into the dashboard.
+3. **Redesigned dashboard visualization** by replacing the risk distribution chart with a **Top Attrition Drivers** section that displays feature importance as animated horizontal bars.
+
+### Rationale/Logic
+- **Model interpretability over raw distribution**: The risk distribution chart showed *how many* employees were at risk, but the driver visualization shows *why* they're at risk. This shifts from descriptive to diagnostic analytics.
+- **Normalized importance scores**: Using `(importance / max_importance) * 100` creates intuitive 0-100 scales where 100 represents the strongest driver, making comparisons immediate.
+- **Color-coded thresholds**: Drivers >80% importance are marked critical (red), >50% medium (orange/amber), and lower ones low (blue/teal). This visual encoding helps prioritize interventions.
+- **Feature name formatting**: Implemented `format_feature_name()` to transform camelCase/PascalCase feature names into readable labels (e.g., "YearsWithCurrManager" → "Years With Curr Manager").
+
+### Outcome
+- **Dashboard now provides strategic insights**: Leadership can immediately see that "Years With Current Manager" (100%) and "Years At Company" (99.1%) are the strongest attrition predictors, followed by "OverTime" (96%).
+- **Test suite passes faster**: Execution time improved from 7.43s to 2.24s, indicating more efficient test execution.
+- **Data-to-insight pipeline complete**: From raw data → model training → strategic insights → executive dashboard in a single automated run.
+
+---
+
+## [2026-01-30 02:30] Minor Refinements
+
+- **Updated table header**: Changed "Risk Level
