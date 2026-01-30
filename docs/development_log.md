@@ -349,3 +349,21 @@ Generated a final, data-rich presentation deck (`presentation_final.html`). The 
 *   **Performance Monitoring:** The slight increase in test duration (0.15 seconds) is logged. While not an issue here, tracking this metric over time can reveal subtle performance degradations, such as those caused by adding more complex fixtures, slower I/O in new tests, or environmental drift.
 
 **Outcome:** The QA report now accurately reflects the most recent test execution. All 18 tests continue to pass, confirming the functional integrity of the models and data processing pipelines. The updated document serves as a valid checkpoint for the project's current state.
+
+## [2026-01-30 14:50] Final Submission Packaging & Presentation Polish
+
+### Context/Problem
+The project is in its final stage, requiring a clean, professional submission package and a polished presentation for stakeholders. Two key issues needed resolution:
+1.  **Submission Packaging**: The `package_submission.py` script was not correctly including the final presentation (`slides.html`) in the root of the ZIP file, which is a requirement for the submission format.
+2.  **Presentation Readability**: The final HTML presentation (`presentation_final.html`) contained overly complex print/CSS media query styles that were causing rendering inconsistencies and visual clutter, detracting from the core data narrative.
+
+### Solution/Implementation
+1.  **Enhanced ZIP Packaging Logic**: Modified `package_submission.py` to support a new tuple-based inclusion format `(source_path, arcname)`. This allows for **file flattening** during the ZIP creation process. Specifically, `('templates/slides.html', 'slides.html')` was added to the `INCLUDES` list, ensuring the file is copied from the `templates/` directory and placed at the root of the ZIP archive.
+2.  **Presentation Streamlining**: Removed the extensive `@media print` CSS block and several overly specific inline styles from `presentation_final.html`. This included deleting print-specific page sizing, margin overrides, and slide-breaking rules. Minor typography adjustments (font sizes, spacing) were made to improve visual hierarchy and flow.
+
+### Rationale/Logic
+*   **Packaging (Flattening)**: The tuple approach provides explicit control over the final archive structure without altering the project's source organization. It's a more robust and declarative solution than moving files or using complex path manipulation, ensuring the submission meets the exact required file layout.
+*   **Presentation (CSS Simplification)**: The removed print styles were intended for PDF export but introduced unnecessary complexity and potential conflicts in a web-based viewing context (the primary delivery method). By stripping them out, we ensure consistent rendering across browsers and focus the CSS on core, reliable visual design. The typography tweaks enhance scannability and direct attention to the key data points and narrative.
+
+### Outcome
+*   **Packaging**: The submission ZIP (`submission.zip`) now correctly contains `slides.html` at its root, as verified by the script's output log. All 18 project tests continue to

@@ -116,10 +116,20 @@ def inject_data(csv_path, html_template_path, output_path, raw_data_path=None):
     print(f"✅ Successfully generated portable report at {output_path}")
 
 if __name__ == "__main__":
-    # Adjust paths relative to the project root if run from there, 
-    # or handle relative imports. Assuming run from project root.
-    CSV_PATH = "results/risk_watch_list.csv"
-    TEMPLATE_PATH = "presentation.html"
-    OUTPUT_PATH = "results/presentation_final.html"
+    from pathlib import Path
     
-    inject_data(CSV_PATH, TEMPLATE_PATH, OUTPUT_PATH)
+    # Robust path resolution: locate project root relative to this script
+    # This script is at: src/utils/inject_data.py (2 levels below root)
+    script_dir = Path(__file__).resolve().parent
+    project_root = script_dir.parent.parent
+    
+    # Define paths relative to project root
+    csv_path = project_root / "results" / "risk_watch_list.csv"
+    template_path = project_root / "templates" / "presentation.html"
+    output_path = project_root / "results" / "presentation_final.html"
+    
+    # Validate template exists before proceeding
+    if not template_path.exists():
+        raise FileNotFoundError(f"Template not found at: {template_path}")
+    
+    inject_data(str(csv_path), str(template_path), str(output_path))

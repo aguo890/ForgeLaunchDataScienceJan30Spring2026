@@ -34,11 +34,12 @@ EXCLUDES = {
 }
 
 # Files/folders to explicitly INCLUDE (in order of importance)
+# Tuples specify (source_path, arcname) for files that need flattening in the zip
 INCLUDES = [
     'README.md',
     'main.py',
     'requirements.txt',
-    'slides.html',
+    ('templates/slides.html', 'slides.html'),  # Flatten: place at zip root
     'src/',
     'notebooks/',
     'data/',
@@ -66,6 +67,21 @@ def create_submission_zip():
     
     with zipfile.ZipFile(OUTPUT_PATH, 'w', zipfile.ZIP_DEFLATED) as zf:
         for include in INCLUDES:
+            # Handle tuple entries: (source_path, arcname) for flattening
+            if isinstance(include, tuple):
+                source_path, arcname = include
+                include_path = PROJECT_ROOT / source_path
+                
+                if not include_path.exists():
+                    print(f"⚠️  Skipping (not found): {source_path}")
+                    continue
+                
+                zf.write(include_path, arcname)
+                print(f"✅ Added: {source_path} → {arcname}")
+                files_added += 1
+                continue
+            
+            # Handle string entries (original behavior)
             include_path = PROJECT_ROOT / include
             
             if not include_path.exists():
