@@ -79,3 +79,19 @@ def plot_risk_distribution(risk_scores, output_path):
     plt.tight_layout()
     plt.savefig(output_path / '03_risk_distribution.png')
     plt.close()
+
+def plot_correlation_heatmap(df, output_path):
+    """Generates a correlation heatmap for numeric features."""
+    import numpy as np
+    
+    plt.figure(figsize=(12, 10))
+    numeric_df = df.select_dtypes(include=['int64', 'float64'])
+    corr = numeric_df.corr()
+    mask = np.triu(np.ones_like(corr, dtype=bool))
+    
+    sns.heatmap(corr, mask=mask, cmap='RdBu_r', center=0, 
+                linewidths=0.5, annot=False)
+    plt.title("Feature Correlation Matrix", fontsize=14)
+    plt.tight_layout()
+    plt.savefig(output_path / '00_correlation_heatmap.png')
+    plt.close()

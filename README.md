@@ -1,43 +1,101 @@
 # Strategic Data Science Sprint: HR Retention Analytics
-**Forge Launch Skills Challenge - Jan 2026**
+**Forge Launch Skills Challenge - January 2026**
 
-## 1. Project Overview
-This project transforms a static HR dataset into a proactive "Pre-Mortem" Retention System. 
+---
+
+## Executive Summary
+
+This project transforms a static HR dataset into a proactive **"Pre-Mortem" Retention System**. 
 Using Logistic Regression, we identify employees at risk of leaving *before* they resign.
 
-**Key Deliverable:** `results/risk_watch_list.csv` (A prioritized list of at-risk employees).
+| Deliverable | Location | Description |
+|-------------|----------|-------------|
+| **Risk Watch List** | `results/risk_watch_list.csv` | Prioritized list of at-risk employees |
+| **Visualizations** | `results/figures/` | 4 presentation-ready charts |
+| **Reproducible Pipeline** | `main.py` | Single command reproduces all results |
 
-## 2. Directory Structure
+---
+
+## Technical Highlights
+
+### 🚀 Performance Optimizations
+- **Vectorized Operations**: Feature engineering uses `np.where()` for C-level performance, avoiding slow row-wise iteration
+
+### 🔒 Data Integrity
+- **No Data Leakage**: `scale_train_test()` fits the scaler on training data only, ensuring authentic model performance metrics
+
+### 📊 Interpretable Model Choice
+- **Logistic Regression**: Selected over black-box models because HR stakeholders need to understand *why* an employee is at risk. Coefficients act as "impact weights" for each driver.
+
+---
+
+## Directory Structure
 
 ```
 ├── data/
-│   └── raw/               # Place WA_Fn-UseC_-HR-Employee-Attrition.csv here
-├── notebooks/             # Exploratory Analysis (EDAs)
+│   └── raw/                    # WA_Fn-UseC_-HR-Employee-Attrition.csv
+├── notebooks/
+│   ├── 01_EDA.ipynb            # Exploratory analysis
+│   ├── 02_Feature_Engineering.ipynb
+│   ├── 03_Modeling.ipynb
+│   └── 04_Risk_Watch_List.ipynb
 ├── results/
-│   ├── figures/           # Generated charts for the slide deck
-│   └── risk_watch_list.csv # Final output
+│   ├── figures/
+│   │   ├── 00_correlation_heatmap.png
+│   │   ├── 01_overtime_impact.png
+│   │   ├── 02_feature_drivers.png
+│   │   └── 03_risk_distribution.png
+│   └── risk_watch_list.csv
 ├── src/
-│   ├── data_ingestion.py  # Loading & cleaning
-│   ├── features.py        # Feature engineering (TenureRatio, etc.)
-│   ├── modeling.py        # Model training
-│   └── visualization.py   # Plotting utilities
-├── main.py                # MASTER SCRIPT - Run this to reproduce everything
-├── requirements.txt       # Dependencies
+│   ├── data_ingestion.py       # Loading & cleaning
+│   ├── features.py             # Feature engineering + scaling
+│   ├── modeling.py             # Model training & evaluation
+│   └── visualization.py        # Plotting utilities
+├── test/                       # Unit tests
+├── main.py                     # MASTER ORCHESTRATOR
+├── requirements.txt
 └── README.md
 ```
 
-## 3. Quick Start (Reproducibility)
-To run the entire pipeline (Data Cleaning -> Modeling -> Visualization):
+---
 
-1. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Quick Start
 
-2. **Run the Orchestrator:**
-   ```bash
-   python main.py
-   ```
+### 1. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-3. **View Results:**
-   Check the `results/figures` folder for charts and `results/risk_watch_list.csv` for the findings.
+### 2. Run the Pipeline
+```bash
+python main.py
+```
+
+### 3. View Results
+- **Charts:** `results/figures/`
+- **Risk Watch List:** `results/risk_watch_list.csv`
+
+---
+
+## Feature Engineering
+
+| Feature | Formula | Business Logic |
+|---------|---------|----------------|
+| `TenureRatio` | YearsAtCompany / TotalWorkingYears | Measures company loyalty vs. career length |
+| `PromotionStagnation` | YearsInRole - YearsSincePromotion | Detects career stagnation |
+| `IncomeStability` | MonthlyIncome / Age | Normalizes compensation by career stage |
+| `SatisfactionComposite` | Mean of 4 satisfaction scores | Aggregates sentiment signals |
+
+---
+
+## Key Insights
+
+1. **Burnout Signal**: Employees working overtime leave at **~31%** vs **10%** for non-overtime
+2. **Sales Risk**: Sales Representatives have the highest attrition rate by role
+3. **Top Drivers**: OverTime, JobInvolvement, and EnvironmentSatisfaction emerge as key predictors
+
+---
+
+## Author
+
+Built with a "story-first" data philosophy: *analyses exist to make decisions easier for the people who need them.*

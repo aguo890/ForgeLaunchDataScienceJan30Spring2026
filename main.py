@@ -9,9 +9,11 @@ import logging
 sys.path.append(str(Path(__file__).parent))
 
 from src.data_ingestion import load_and_clean_data
-from src.features import perform_feature_engineering
+from src.features import perform_feature_engineering, split_data, scale_train_test
 from src.modeling import train_logistic_regression
-from src.visualization import setup_styles, plot_attrition_by_overtime, plot_feature_importance, plot_risk_distribution
+from src.visualization import (setup_styles, plot_attrition_by_overtime, 
+                               plot_feature_importance, plot_risk_distribution,
+                               plot_correlation_heatmap)
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -46,34 +48,37 @@ def main():
     logger.info("Phase 2: Generating Exploratory Visualizations...")
     try:
          plot_attrition_by_overtime(clean_df, figures_dir)
+         plot_correlation_heatmap(clean_df, figures_dir)  # For the presentation deck
     except Exception as e:
-        logger.error(f"Failed to plot overtime impact: {e}")
+        logger.error(f"Failed to plot exploratory visualizations: {e}")
 
     # 4. Feature Engineering
     logger.info("Phase 3: Engineering Features...")
-    df_processed = perform_feature_engineering(clean_df)
+    df_processed = perform_feature_engineering(clean_df)  # No scaling here - done after split
     
     # Split for Training
     # We drop EmployeeNumber for training
     # And we also need to drop 'Attrition' because it's the target.
-    # Note: perform_feature_engineering encodes Attrition to 0/1 in 'Attrition' column?
-    # Let's check src/features.py: encode_features maps 'Attrition' to 1/0.
-    # So df_processed['Attrition'] is 0/1.
+    # Note: perform_feature_engineering encodes Attrition to 0/1 in 'Attrition' column
     
     if 'EmployeeNumber' in df_processed.columns:
         X = df_processed.drop(columns=['Attrition', 'EmployeeNumber'])
     else:
         X = df_processed.drop(columns=['Attrition'])
         
-    y = df_processed['Attrition'] # It is already 0/1 from features.py:encode_features
-
+    y = df_processed['Attrition']  # Already 0/1 from features.py:encode_features
+    
+    # Proper scaling: fit on training data only to prevent data leakage
+    # For main.py we train on full X for final model, but demonstrate proper pattern
+    X_scaled, _ = scale_train_test(X, X)  # In production: split first, then scale
+    
     # 5. Modeling
     logger.info("Phase 4: Training Logistic Regression Model...")
-    model = train_logistic_regression(X, y, class_weight='balanced')
+    model = train_logistic_regression(X_scaled, y, class_weight='balanced')
 
     # 6. Model Interpretation
     logger.info("Phase 5: Visualizing Model Drivers...")
-    plot_feature_importance(model, X, X.columns, figures_dir)
+    plot_feature_importance(model, X_scaled, X_scaled.columns, figures_dir)
 
     # 7. Risk Scoring (The Product)
     logger.info("Phase 6: Generating Risk Watch List...")
@@ -82,22 +87,13 @@ def main():
     # Attrition is 0/1 now. 0 = No/Stay, 1 = Yes/Leave.
     active_mask = (df_processed['Attrition'] == 0)
     
-    # We need X for active employees.
-    X_active = X[active_mask]
+    # Use scaled features for consistent prediction
+    X_active_scaled = X_scaled[active_mask]
     
-    # We need EmployeeNumber. 
-    # clean_df has it. df_processed might have it if perform_feature_engineering preserved it (it copies df).
-    # src/features.py operates on copy.
-    # scale_features excludes it.
-    # So df_processed should have EmployeeNumber if clean_df passed it.
-    # Wait, clean_df has it because we called load_and_clean_data(drop_id=False).
-    # So df_processed has it unless some step dropped it.
-    # In features.py, scale_features was modified to exclude it from scaling, not drop it.
-    # So it should be there.
-    
+    # Get EmployeeNumber from the processed dataframe
     employees_active = df_processed.loc[active_mask, 'EmployeeNumber']
     
-    risk_scores = model.predict_proba(X_active)[:, 1]
+    risk_scores = model.predict_proba(X_active_scaled)[:, 1]
     
     # Visualize Risk Distribution
     plot_risk_distribution(risk_scores, figures_dir)
