@@ -288,3 +288,18 @@ Generated a final, data-rich presentation deck (`presentation_final.html`). The 
 **Rationale/Logic:** The core logic is **audience adaptation**. Technical stakeholders need to see the "so what?" behind the metrics. The changes shift the focus from *model mechanics* (accuracy, features) to *business implications* (cost, risk, actionable drivers). Adding a financial estimate (`$7.7M liability`) immediately grounds the analysis in a language leadership understands. Clear sourcing and scope notes build credibility and trust in the data foundation.
 
 **Outcome:** The presentation is now a cohesive, end-to-end story: it establishes a business problem (preventable turnover), shows the scale of exposure (financial cost), diagnoses the root causes (systemic drivers), and points toward a solution (prescriptive analytics). The QA report timestamp was updated, and all tests continue to pass, confirming the underlying analysis remains valid.
+
+## [2026-01-30 03:33] Final Presentation Polish and PDF Export
+
+**Context/Problem:** The final presentation required two key deliverables: a polished, print-ready HTML slide deck and a corresponding PDF export for distribution. The initial HTML version lacked proper print styling, causing layout and formatting issues when converted to PDF. Additionally, minor visual inconsistencies in slide spacing and element sizing needed refinement for a professional final output.
+
+**Solution/Implementation:** Implemented comprehensive **print media queries** (`@media print`) in the HTML's CSS. This included:
+1.  Setting a fixed page size (`960px x 540px`) to enforce the 16:9 aspect ratio in the PDF.
+2.  Removing margins, shadows, and flex layouts to ensure a clean, full-page export for each slide.
+3.  Adding `break-after: always` to force each `.slide` div onto a new page in the PDF.
+4.  Applied `-webkit-print-color-adjust: exact;` to ensure background colors (like the dark code block) render correctly in print.
+5.  Made minor visual refinements to the "Context & Baseline" slide (Slide 2), reducing padding, gap sizes, and font sizes for better information density and balance.
+
+**Rationale/Logic:** A static PDF is a critical deliverable for stakeholders who may not view the interactive HTML version. The print CSS approach allows us to maintain a single source of truth (the HTML file) while generating a high-fidelity, presentation-ready PDF directly from the browser's "Print to PDF" function. This is more reliable and maintainable than managing separate HTML and PDF generation scripts. The visual tweaks to Slide 2 were driven by a design review, prioritizing clarity and professional spacing over maximal element size.
+
+**Outcome:** Successfully generated the final `slide-deck.pdf` (included in the commit). The PDF now correctly displays all five slides with consistent formatting, proper page breaks, and preserved styling. The QA report was automatically updated to reflect the new build timestamp and shows all tests continue to pass, now in a faster 2.27 seconds. The presentation is now ready for stakeholder review and distribution.
