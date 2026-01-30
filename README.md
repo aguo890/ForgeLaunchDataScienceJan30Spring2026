@@ -33,29 +33,36 @@ Using Logistic Regression, we identify employees at risk of leaving *before* the
 
 ```
 ├── data/
-│   └── raw/                    # WA_Fn-UseC_-HR-Employee-Attrition.csv
-├── notebooks/
-│   ├── 01_EDA.ipynb            # Exploratory analysis
+│   └── raw/                       # WA_Fn-UseC_-HR-Employee-Attrition.csv
+├── notebooks/                     # SOURCE: Executable Jupyter notebooks
+│   ├── 01_EDA.ipynb
 │   ├── 02_Feature_Engineering.ipynb
 │   ├── 03_Modeling.ipynb
 │   └── 04_Risk_Watch_List.ipynb
-├── results/
-│   ├── figures/
-│   │   ├── 00_correlation_heatmap.png
-│   │   ├── 01_overtime_impact.png
-│   │   ├── 02_feature_drivers.png
-│   │   └── 03_risk_distribution.png
-│   └── risk_watch_list.csv
+├── results/                       # OUTPUT: All generated artifacts
+│   ├── figures/                   # Presentation-ready charts
+│   ├── modeling_results.md        # Model performance report
+│   ├── presentation_final.html    # Final injected presentation
+│   ├── risk_watch_list.csv        # Prioritized at-risk employees
+│   └── slides_final.html          # Final injected slides
 ├── src/
-│   ├── data_ingestion.py       # Loading & cleaning
-│   ├── features.py             # Feature engineering + scaling
-│   ├── modeling.py             # Model training & evaluation
-│   └── visualization.py        # Plotting utilities
-├── test/                       # Unit tests
-├── main.py                     # MASTER ORCHESTRATOR
+│   ├── data_ingestion.py          # Loading & cleaning
+│   ├── features.py                # Feature engineering + scaling
+│   ├── modeling.py                # Model training & evaluation
+│   ├── visualization.py           # Plotting utilities
+│   └── utils/
+│       └── inject_data.py         # Template → Final HTML generator
+├── templates/                     # HTML templates (pre-injection)
+│   ├── presentation.html
+│   └── slides.html
+├── test/                          # Unit tests
+├── main.py                        # MASTER ORCHESTRATOR
+├── package_submission.py          # Creates submission zip
 ├── requirements.txt
 └── README.md
 ```
+
+> **Architecture Note:** `notebooks/` contains only source code (`.ipynb`). All generated outputs (reports, HTML, CSVs) go to `results/`. Templates in `templates/` are processed by `inject_data.py` to produce final HTML with embedded data.
 
 ---
 

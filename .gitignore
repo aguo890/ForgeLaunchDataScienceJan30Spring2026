@@ -31,6 +31,12 @@ wheels/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
+# Notebooks: Prevent generated outputs in source directory
+# All generated reports/exports should go to results/
+notebooks/*.md
+notebooks/*.html
+notebooks/*_files/
+
 # IDE
 .idea/
 .vscode/
