@@ -68,19 +68,33 @@ Using Logistic Regression, we identify employees at risk of leaving *before* the
 
 ## Quick Start
 
-### 1. Install Dependencies
+### 1. Set up Environment (Recommended)
+Create a clean environment to avoid dependency conflicts:
+
+```bash
+# Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 2. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Run the Pipeline
+### 3. Run the Pipeline
 ```bash
 python main.py
 ```
 
-### 3. View Results
+### 4. View Results
 - **Charts:** `results/figures/`
 - **Risk Watch List:** `results/risk_watch_list.csv`
+- **Presentation:** `results/presentation_final.html`
 
 ---
 
