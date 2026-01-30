@@ -235,8 +235,8 @@
         <div class="slide" style="display: flex; flex-direction: column; justify-content: center;">
             <div style="margin-bottom: 40px;">
                 <span
-                    style="background: #eef2ff; color: #4f46e5; padding: 6px 12px; border-radius: 4px; font-weight: 600; font-size: 14px; text-transform: uppercase;">Data
-                    Science Project</span>
+                    style="background: #eef2ff; color: #4f46e5; padding: 6px 12px; border-radius: 4px; font-weight: 600; font-size: 14px; text-transform: uppercase;">Forge
+                    Launch | Spring 2026</span>
             </div>
             <h1>Predicting Employee Attrition:<br>A Diagnostic Approach</h1>
             <p class="subtext">From Descriptive Stats to Machine Learning Drivers</p>
@@ -250,7 +250,7 @@
     <div style="position: relative;">
         <div class="slide-label">Slide 2: Context & Baseline</div>
         <div class="slide">
-            <h2>Data Scope & Baseline Performance</h2>
+            <h2>Baseline Analysis: Attrition aligns with industry norms (16.1%), providing a stable control group.</h2>
             <div style="display: flex; gap: 40px; align-items: flex-start;">
 
                 <div style="flex: 1;">
@@ -318,14 +318,29 @@
                     </div>
                 </div>
             </div>
-            <div class="footer-attr">Data Snapshot: Fiscal Year 2025 | Scope: All Regions</div>
+            <div class="footer-attr"
+                style="display: flex; justify-content: space-between; align-items: flex-end; width: calc(100% - 120px); padding-right: 0;">
+                <div>
+                    <strong>Data Source:</strong> IBM HR Analytics (Synthetic) via
+                    <a href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset"
+                        target="_blank"
+                        style="color: var(--accent-blue); text-decoration: none; border-bottom: 1px dotted;">Kaggle</a>
+                    <br>
+                    <span style="opacity: 0.7;">Note: Synthetic dataset used for blind benchmarking. No PII
+                        involved.</span>
+                </div>
+                <div style="text-align: right;">
+                    Data Snapshot: Fiscal Year 2025<br>
+                    Scope: All Regions
+                </div>
+            </div>
         </div>
     </div>
 
     <div style="position: relative;">
         <div class="slide-label">Slide 3: Approach</div>
         <div class="slide">
-            <h2>Approach & Methodology</h2>
+            <h2>Methodology: Moving beyond correlation to isolate causal risk drivers.</h2>
             <div style="margin-top: 40px;">
                 <div style="display: flex; align-items: start; margin-bottom: 30px;">
                     <div
@@ -370,7 +385,7 @@
     <div style="position: relative;">
         <div class="slide-label">Slide 4: Findings (Who?)</div>
         <div class="slide">
-            <h2>Key Finding 1: The Scope of Risk</h2>
+            <h2>Exposure: High-risk employees represent a potential $7.7M liability to the organization.</h2>
             <p>Our model predicts significant exposure. High-risk employees are concentrated in R&D roles with specific
                 tenure profiles.</p>
 
@@ -378,17 +393,21 @@
                 <div class="kpi-card">
                     <div class="kpi-lbl">Total Employees</div>
                     <div class="kpi-val">1,470</div>
-                    <div style="font-size: 12px; color: var(--risk-safe);">100% Data Coverage</div>
+                    <div style="font-size: 12px; color: var(--risk-safe);">
+                        <span style="font-weight: 800;">84%</span> Accuracy on Test Set
+                    </div>
                 </div>
+
                 <div class="kpi-card" style="border-color: var(--risk-critical); background: #fef2f2;">
                     <div class="kpi-lbl">High Risk Segment</div>
                     <div class="kpi-val" style="color: var(--risk-critical);">237</div>
                     <div style="font-size: 12px; color: var(--risk-critical);">~16.1% of Workforce</div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-lbl">Avg Risk Probability</div>
-                    <div class="kpi-val">28.4%</div>
-                    <div style="font-size: 12px; color: var(--text-secondary);">Model Confidence Score</div>
+
+                <div class="kpi-card" style="border-left: 4px solid var(--accent-blue);">
+                    <div class="kpi-lbl">Est. Attrition Cost</div>
+                    <div class="kpi-val" id="exposure-val">$0M</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Based on 50% Repl. Cost</div>
                 </div>
             </div>
 
@@ -403,7 +422,7 @@
     <div style="position: relative;">
         <div class="slide-label">Slide 5: Findings (Why?)</div>
         <div class="slide">
-            <h2>Key Finding 2: Systemic Drivers</h2>
+            <h2>Drivers: Manager Stability is the primary retention anchor; Overtime is the lead risk accelerator.</h2>
             <p>The model reveals distinct <span
                     style="color: var(--risk-critical); font-weight: 600;">Accelerators</span> and <span
                     style="color: var(--risk-safe); font-weight: 600;">Protectors</span>.</p>
@@ -440,19 +459,27 @@
                 # 4. Return the delta (How much risk did we eliminate?)
                 return current_features.risk_score - new_probability
             </script>
-            <h2>Future Work & Recommendations</h2>
+            <h2>Roadmap: Operationalizing these insights into daily HR workflows</h2>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px;">
-                <div>
-                    <h3 style="color: var(--accent-blue);">Prescriptive Analytics</h3>
-                    <p>If I had more time, I would build a <strong>"What-If" Calculator</strong>.</p>
-                    <p style="font-size: 16px;">This tool would allow HR managers to toggle specific variables (e.g.,
-                        "Remove OverTime") to see the immediate reduction in an employee's Risk Score.</p>
+                <div
+                    style="padding: 20px; border: 1px solid var(--border-color); border-radius: 8px; border-top: 4px solid var(--accent-blue);">
+                    <h3 style="color: var(--text-primary); margin-top: 0;">Prescriptive Analytics</h3>
+                    <p style="font-weight: 600; color: var(--accent-blue);">Phase 2: The "What-If" Calculator</p>
+                    <p style="font-size: 15px;">
+                        Move from <em>predicting</em> risk to <em>preventing</em> it. This tool will allow managers to
+                        toggle variables (e.g., "Reduce Travel") to instantly see the reduction in Risk Probability.
+                    </p>
                 </div>
-                <div>
-                    <h3 style="color: var(--accent-blue);">Deployment</h3>
-                    <p>Integrate this model into the weekly HR dashboard.</p>
-                    <p style="font-size: 16px;">Instead of a static report, managers would receive a "Monday Morning
-                        Risk Alert" for any team member whose score crosses the 70% threshold.</p>
+
+                <div
+                    style="padding: 20px; border: 1px solid var(--border-color); border-radius: 8px; border-top: 4px solid var(--risk-safe);">
+                    <h3 style="color: var(--text-primary); margin-top: 0;">Deployment Strategy</h3>
+                    <p style="font-weight: 600; color: var(--risk-safe);">Integration: The "Monday Warning"</p>
+                    <p style="font-size: 15px;">
+                        Automate the model to run weekly. Push alerts to managers only when a high-performer crosses the
+                        <strong>70% Risk Threshold</strong>, ensuring proactive retention conversations.
+                    </p>
                 </div>
             </div>
         </div>
@@ -493,7 +520,35 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', renderDiagnosticChart);
+        // --- Calculate Financial Exposure ---
+        function renderFinancials() {
+            // 1. Count High Risk Employees (Matches Python logic)
+            const highRiskCount = window.RISK_DATA.filter(d => d.RiskLevel === "High").length;
+
+            // 2. Assumptions (In a real app, you would pull actual MonthlyIncome from the JSON)
+            const AVG_ANNUAL_SALARY = 65000;
+            const REPLACEMENT_COST_FACTOR = 0.5; // Conservative estimate (50% of salary)
+
+            // 3. Calculate
+            const totalExposure = highRiskCount * AVG_ANNUAL_SALARY * REPLACEMENT_COST_FACTOR;
+
+            // 4. Format nicely (e.g., "$7.7M")
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                notation: "compact",
+                maximumFractionDigits: 1
+            });
+
+            // 5. Inject
+            const el = document.getElementById('exposure-val');
+            if (el) el.innerText = formatter.format(totalExposure);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDiagnosticChart();
+            renderFinancials();
+        });
     </script>
 
     <script>

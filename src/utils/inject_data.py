@@ -41,7 +41,7 @@ def inject_data(csv_path, html_template_path, output_path, raw_data_path=None):
     
     # 0. Calculate Baseline Metrics from raw data
     if raw_data_path is None:
-        raw_data_path = os.path.join(os.path.dirname(csv_path), '..', 'data', 'WA_Fn-UseC_-HR-Employee-Attrition.csv')
+        raw_data_path = os.path.join(os.path.dirname(csv_path), '..', 'data', 'raw', 'WA_Fn-UseC_-HR-Employee-Attrition.csv')
     baseline = calculate_baseline_metrics(raw_data_path)
     print(f"Baseline: {baseline['rate']}% attrition across {baseline['total_employees']} employees")
     
